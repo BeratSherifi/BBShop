@@ -45,14 +45,17 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string id, UserDto userDto)
+    public async Task<IActionResult> Update(string id, UserUpdateDto userDto)
     {
-        if (id != userDto.Id)
+        try
         {
-            return BadRequest();
+            await _userService.UpdateAsync(id, userDto);
+            return NoContent();
         }
-        await _userService.UpdateAsync(userDto);
-        return NoContent();
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpDelete("{id}")]

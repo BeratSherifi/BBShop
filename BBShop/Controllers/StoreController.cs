@@ -49,14 +49,17 @@ public class StoreController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, StoreDto storeDto)
+    public async Task<IActionResult> Update(Guid id, StoreUpdateDto storeDto)
     {
-        if (id != storeDto.StoreId)
+        try
         {
-            return BadRequest();
+            await _storeService.UpdateAsync(id, storeDto);
+            return NoContent();
         }
-        await _storeService.UpdateAsync(storeDto);
-        return NoContent();
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpDelete("{id}")]

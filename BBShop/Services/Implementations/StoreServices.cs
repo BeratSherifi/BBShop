@@ -57,9 +57,18 @@ public class StoreService : IStoreService
         await _storeRepository.AddAsync(store);
     }
 
-    public async Task UpdateAsync(StoreDto storeDto)
+    public async Task UpdateAsync(Guid storeId, StoreUpdateDto storeDto)
     {
-        var store = _mapper.Map<Store>(storeDto);
+        var store = await _storeRepository.GetByIdAsync(storeId);
+        if (store == null)
+        {
+            throw new Exception("Store not found");
+        }
+
+        store.StoreName = storeDto.StoreName;
+        store.CreatedAt = storeDto.CreatedAt;
+        store.UpdatedAt = storeDto.UpdatedAt;
+
         await _storeRepository.UpdateAsync(store);
     }
 

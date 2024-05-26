@@ -77,16 +77,18 @@ public class UserService : IUserService
         await _userManager.AddToRoleAsync(user, userDto.Role);
     }
 
-    public async Task UpdateAsync(UserDto userDto)
+    public async Task UpdateAsync(string id, UserUpdateDto userDto)
     {
-        var user = await _userManager.FindByIdAsync(userDto.Id);
+        var user = await _userManager.FindByIdAsync(id);
         if (user == null)
         {
             throw new Exception("User not found");
         }
+
         user.UserName = userDto.Username;
         user.Email = userDto.Email;
         var result = await _userManager.UpdateAsync(user);
+
         if (!result.Succeeded)
         {
             throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
@@ -97,6 +99,7 @@ public class UserService : IUserService
         await _userManager.RemoveFromRolesAsync(user, currentRoles);
         await _userManager.AddToRoleAsync(user, userDto.Role);
     }
+
 
     public async Task DeleteAsync(string id)
     {
