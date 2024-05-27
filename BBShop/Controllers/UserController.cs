@@ -1,67 +1,92 @@
+
+
+using System.Security.Claims;
 using BBShop.DTOs;
 using BBShop.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BBShop.Controllers;
-// Controllers/UserController.cs
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-[Route("api/[controller]")]
-[ApiController]
-public class UserController : ControllerBase
+namespace BBShop.Controllers
 {
-    private readonly IUserService _userService;
-
-    public UserController(IUserService userService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UserController : ControllerBase
     {
-        _userService = userService;
-    }
+        private readonly IUserService _userService;
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(string id)
-    {
-        var user = await _userService.GetByIdAsync(id);
-        if (user == null)
+        public UserController(IUserService userService)
         {
-            return NotFound();
+            _userService = userService;
         }
-        return Ok(user);
-    }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var users = await _userService.GetAllAsync();
-        return Ok(users);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Add(UserCreateDto userDto)
-    {
-        await _userService.AddAsync(userDto);
-        return Ok();
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string id, UserUpdateDto userDto)
-    {
-        try
+        [HttpGet]
+        [Authorize(Policy = "AdminOrSellerOrBuyerPolicy")] // everyone can access
+        public async Task<IActionResult> GetAll()
         {
-            await _userService.UpdateAsync(id, userDto);
+            var users = await _userService.GetAllAsync();
+            return Ok(users);
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Policy = "AdminOrSellerOrBuyerPolicy")] // only admin, seller, and buyer can access
+        public async Task<IActionResult> GetById(string id)
+        {
+            var user = await _userService.GetByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
+        [HttpPost]
+        [AllowAnonymous] // everyone can create account
+        public async Task<IActionResult> Add(UserCreateDto userDto)
+        {
+            var userId = await _userService.AddAsync(userDto);
+            return CreatedAtAction(nameof(GetById), new { id = userId }, userId);
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Policy = "AdminOrSellerOrBuyerPolicy")] // only admin, seller, and buyer can access
+        public async Task<IActionResult> Update(string id, UserUpdateDto userUpdateDto)
+        {
+            var user = await _userService.GetByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Check if the user is authorized to update the account
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (currentUserId == null || (!User.IsInRole("Admin") && currentUserId != id))
+            {
+                return Forbid();
+            }
+
+            await _userService.UpdateAsync(id, userUpdateDto);
             return NoContent();
         }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
-    {
-        await _userService.DeleteAsync(id);
-        return NoContent();
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminOrSellerOrBuyerPolicy")] // only admin, seller, and buyer can access
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userService.GetByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Check if the user is authorized to delete the account
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (currentUserId == null || (!User.IsInRole("Admin") && currentUserId != id))
+            {
+                return Forbid();
+            }
+
+            await _userService.DeleteAsync(id);
+            return NoContent();
+        }
     }
 }

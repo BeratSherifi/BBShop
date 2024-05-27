@@ -4,6 +4,8 @@ namespace BBShop.Models;
 
 public class User : IdentityUser
 {
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
+    public string FullName { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public ICollection<Store> Stores { get; set; } = new List<Store>();
 }

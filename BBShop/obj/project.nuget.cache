@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "QzZdKfSzEji8GE9jSEOkPxSLLTkol6EkabJysHOqlCHav/LTLVuKsLwOVxx9EU/3ZuQ7TdGvCWVzdOWppPu4Pw==",
+  "dgSpecHash": "4ygw9oDRVue2s+tGNi9HV+tcGmGecPLgNH/GZLs3nfCZ+oKpTtrOM3PPonyKGJ/IQsz0uevT1zKKD2j2j9dc2w==",
   "success": true,
   "projectFilePath": "/home/linux/RiderProjects/BBShop/BBShop/BBShop.csproj",
   "expectedPackageFiles": [
@@ -31,7 +31,7 @@
     "/home/linux/.nuget/packages/microsoft.extensions.options/7.0.0/microsoft.extensions.options.7.0.0.nupkg.sha512",
     "/home/linux/.nuget/packages/microsoft.extensions.primitives/7.0.0/microsoft.extensions.primitives.7.0.0.nupkg.sha512",
     "/home/linux/.nuget/packages/microsoft.identitymodel.abstractions/7.5.1/microsoft.identitymodel.abstractions.7.5.1.nupkg.sha512",
-    "/home/linux/.nuget/packages/microsoft.identitymodel.jsonwebtokens/6.15.1/microsoft.identitymodel.jsonwebtokens.6.15.1.nupkg.sha512",
+    "/home/linux/.nuget/packages/microsoft.identitymodel.jsonwebtokens/7.5.1/microsoft.identitymodel.jsonwebtokens.7.5.1.nupkg.sha512",
     "/home/linux/.nuget/packages/microsoft.identitymodel.logging/7.5.1/microsoft.identitymodel.logging.7.5.1.nupkg.sha512",
     "/home/linux/.nuget/packages/microsoft.identitymodel.protocols/6.15.1/microsoft.identitymodel.protocols.6.15.1.nupkg.sha512",
     "/home/linux/.nuget/packages/microsoft.identitymodel.protocols.openidconnect/6.15.1/microsoft.identitymodel.protocols.openidconnect.6.15.1.nupkg.sha512",
@@ -45,7 +45,7 @@
     "/home/linux/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.5.0/swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
     "/home/linux/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.5.0/swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512",
     "/home/linux/.nuget/packages/system.codedom/4.4.0/system.codedom.4.4.0.nupkg.sha512",
-    "/home/linux/.nuget/packages/system.identitymodel.tokens.jwt/6.15.1/system.identitymodel.tokens.jwt.6.15.1.nupkg.sha512",
+    "/home/linux/.nuget/packages/system.identitymodel.tokens.jwt/7.5.1/system.identitymodel.tokens.jwt.7.5.1.nupkg.sha512",
     "/home/linux/.nuget/packages/system.runtime.compilerservices.unsafe/6.0.0/system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
     "/home/linux/.nuget/packages/system.text.encodings.web/7.0.0/system.text.encodings.web.7.0.0.nupkg.sha512",
     "/home/linux/.nuget/packages/system.text.json/7.0.0/system.text.json.7.0.0.nupkg.sha512"

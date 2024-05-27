@@ -3,77 +3,77 @@ using BBShop.DTOs;
 using BBShop.Models;
 using BBShop.Repositories.Interfaces;
 using BBShop.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace BBShop.Services.Implementations;
-
-public class StoreService : IStoreService
+namespace BBShop.Services.Implementations
 {
-    private readonly IStoreRepository _storeRepository;
-    private readonly UserManager<User> _userManager;
-    private readonly IMapper _mapper;
-
-    public StoreService(IStoreRepository storeRepository, UserManager<User> userManager, IMapper mapper)
+    public class StoreService : IStoreService
     {
-        _storeRepository = storeRepository;
-        _userManager = userManager;
-        _mapper = mapper;
-    }
+        private readonly IStoreRepository _storeRepository;
+        private readonly UserManager<User> _userManager; 
+        private readonly IMapper _mapper;
 
-    public async Task<StoreDto> GetByIdAsync(Guid id)
-    {
-        var store = await _storeRepository.GetByIdAsync(id);
-        return _mapper.Map<StoreDto>(store);
-    }
-
-    public async Task<IEnumerable<StoreDto>> GetAllAsync()
-    {
-        var stores = await _storeRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<StoreDto>>(stores);
-    }
-
-    public async Task AddAsync(StoreCreateDto storeDto)
-    {
-        var user = await _userManager.FindByIdAsync(storeDto.UserId);
-
-        if (user == null)
+        public StoreService(IStoreRepository storeRepository, UserManager<User> userManager, IMapper mapper)
         {
-            throw new Exception("User not found");
+            _storeRepository = storeRepository;
+            _userManager = userManager;
+            _mapper = mapper;
         }
 
-        var roles = await _userManager.GetRolesAsync(user);
-        if (!roles.Contains("seller"))
+        public async Task<StoreDto> GetByIdAsync(Guid id)
         {
-            throw new Exception("Only users with the 'seller' role can create a store");
+            var store = await _storeRepository.GetByIdAsync(id);
+            return _mapper.Map<StoreDto>(store);
         }
 
-        var existingStore = await _storeRepository.GetAllAsync();
-        if (existingStore.Any(s => s.UserId == storeDto.UserId))
+        public async Task<StoreDto> AddAsync(StoreCreateDto storeDto, string userId)
         {
-            throw new Exception("A seller can only have one store");
+            if (!await _userManager.IsInRoleAsync(await _userManager.FindByIdAsync(userId), "Seller"))
+            {
+                throw new Exception("Only sellers can create stores.");
+            }
+
+            var store = _mapper.Map<Store>(storeDto);
+            store.UserId = userId;
+            store.CreatedAt = DateTime.UtcNow;
+            store.UpdatedAt = DateTime.UtcNow;
+            await _storeRepository.AddAsync(store);
+    
+            return _mapper.Map<StoreDto>(store); // Return the created store with StoreId
         }
 
-        var store = _mapper.Map<Store>(storeDto);
-        await _storeRepository.AddAsync(store);
-    }
 
-    public async Task UpdateAsync(Guid storeId, StoreUpdateDto storeDto)
-    {
-        var store = await _storeRepository.GetByIdAsync(storeId);
-        if (store == null)
+        public async Task UpdateAsync(Guid id, StoreUpdateDto storeDto)
         {
-            throw new Exception("Store not found");
+            var store = await _storeRepository.GetByIdAsync(id);
+            if (store == null)
+            {
+                throw new Exception("Store not found.");
+            }
+
+            _mapper.Map(storeDto, store);
+            store.UpdatedAt = DateTime.UtcNow;
+            await _storeRepository.UpdateAsync(store);
         }
 
-        store.StoreName = storeDto.StoreName;
-        store.CreatedAt = storeDto.CreatedAt;
-        store.UpdatedAt = storeDto.UpdatedAt;
+        public async Task DeleteAsync(Guid id)
+        {
+            var store = await _storeRepository.GetByIdAsync(id);
+            if (store == null)
+            {
+                throw new Exception("Store not found.");
+            }
 
-        await _storeRepository.UpdateAsync(store);
-    }
+            await _storeRepository.DeleteAsync(store);
+        }
 
-    public async Task DeleteAsync(Guid id)
-    {
-        await _storeRepository.DeleteAsync(id);
+        public async Task<IEnumerable<StoreDto>> SearchByNameAsync(string name)
+        {
+            var stores = await _storeRepository.SearchByNameAsync(name);
+            return _mapper.Map<IEnumerable<StoreDto>>(stores);
+        }
     }
 }
