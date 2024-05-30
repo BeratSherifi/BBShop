@@ -1,15 +1,17 @@
 using BBShop.DTOs;
-using BBShop.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace BBShop.Services.Interfaces;
-
-public interface IOrderService
+namespace BBShop.Services.Interfaces
 {
-    Task<OrderDto> GetByIdAsync(Guid id);
-    Task<IEnumerable<OrderDto>> GetAllAsync();
-    Task AddAsync(OrderCreateDto orderDto);
-    Task UpdateAsync(Guid orderId, OrderDto orderDto);
-    
-    Task UpdateStatusAsync(Guid orderId, OrderStatusUpdateDto statusUpdateDto);  // New method
-    Task DeleteAsync(Guid id);
+    public interface IOrderService
+    {
+        Task<OrderDto> GetByIdAsync(Guid id);
+        Task<IEnumerable<OrderDto>> GetAllAsync();
+        Task<IEnumerable<OrderDto>> GetByStoreNameAsync(string storeName); // Update the method signature
+        Task AddAsync(OrderCreateDto orderDto, string userId);
+        Task UpdateStatusAsync(Guid orderId, string status);
+        Task DeleteAsync(Guid id);
+    }
 }

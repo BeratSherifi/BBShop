@@ -1,85 +1,64 @@
 using BBShop.DTOs;
-using BBShop.Models;
 using BBShop.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
+using System.Security.Claims;
 
-namespace BBShop.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class OrderController : ControllerBase
+namespace BBShop.Controllers
 {
-    private readonly IOrderService _orderService;
-
-    public OrderController(IOrderService orderService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class OrderController : ControllerBase
     {
-        _orderService = orderService;
-    }
+        private readonly IOrderService _orderService;
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
-    {
-        var order = await _orderService.GetByIdAsync(id);
-        if (order == null)
+        public OrderController(IOrderService orderService)
         {
-            return NotFound();
+            _orderService = orderService;
         }
-        return Ok(order);
-    }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var orders = await _orderService.GetAllAsync();
-        return Ok(orders);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Add(OrderCreateDto orderDto)
-    {
-        try
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
-            await _orderService.AddAsync(orderDto);
-            return Ok();
+            var order = await _orderService.GetByIdAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            return Ok(order);
         }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, OrderDto orderDto)
-    {
-        try
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            await _orderService.UpdateAsync(id, orderDto);
+            var orders = await _orderService.GetAllAsync();
+            return Ok(orders);
+        }
+
+        [HttpGet("store/{storeName}")]
+        public async Task<IActionResult> GetByStoreName(string storeName)
+        {
+            var orders = await _orderService.GetByStoreNameAsync(storeName);
+            return Ok(orders);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "buyer")]
+        public async Task<IActionResult> Create([FromBody] OrderCreateDto orderDto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _orderService.AddAsync(orderDto, userId);
+            return CreatedAtAction(nameof(GetById), new { id = orderDto.OrderId }, orderDto);
+        }
+
+        [HttpPut("{id}/status")]
+        [Authorize(Roles = "seller")]
+        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] string status)
+        {
+            await _orderService.UpdateStatusAsync(id, status);
             return NoContent();
         }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-    
-    [HttpPut("status/{id}")]  
-    public async Task<IActionResult> UpdateStatus(Guid id, OrderStatusUpdateDto statusUpdateDto)
-    {
-        try
-        {
-            await _orderService.UpdateStatusAsync(id, statusUpdateDto);
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
-    {
-        await _orderService.DeleteAsync(id);
-        return NoContent();
     }
 }
