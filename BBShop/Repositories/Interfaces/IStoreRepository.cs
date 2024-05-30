@@ -9,4 +9,5 @@ public interface IStoreRepository
     Task UpdateAsync(Store store);
     Task DeleteAsync(Store store);
     Task<IEnumerable<Store>> SearchByNameAsync(string name);
+    Task<Store> GetByUserIdAsync(string userId);
 }

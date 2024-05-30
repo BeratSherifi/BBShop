@@ -1,70 +1,89 @@
 using BBShop.DTOs;
 using BBShop.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
-namespace BBShop.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class ProductController : ControllerBase
+namespace BBShop.Controllers
 {
-    private readonly IProductService _productService;
-
-    public ProductController(IProductService productService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ProductController : ControllerBase
     {
-        _productService = productService;
-    }
+        private readonly IProductService _productService;
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(Guid id)
-    {
-        var product = await _productService.GetByIdAsync(id);
-        if (product == null)
+        public ProductController(IProductService productService)
         {
-            return NotFound();
+            _productService = productService;
         }
-        return Ok(product);
-    }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var products = await _productService.GetAllAsync();
-        return Ok(products);
-    }
-    
-    [HttpGet("store/{storeId}")]  
-    public async Task<IActionResult> GetByStoreId(Guid storeId)
-    {
-        var products = await _productService.GetByStoreIdAsync(storeId);
-        return Ok(products);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Add(ProductCreateDto productDto)
-    {
-        await _productService.AddAsync(productDto);
-        return Ok();
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, ProductUpdateDto productDto)
-    {
-        try
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
-            await _productService.UpdateAsync(id, productDto);
-            return NoContent();
+            var product = await _productService.GetByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return Ok(product);
         }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
-    {
-        await _productService.DeleteAsync(id);
-        return NoContent();
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var products = await _productService.GetAllAsync();
+            return Ok(products);
+        }
+
+       
+        [HttpGet("store/{storeName}")]
+        public async Task<IActionResult> GetByStoreName(string storeName)
+        {
+            var products = await _productService.GetByStoreNameAsync(storeName);
+            return Ok(products);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = "AdminOrSellerPolicy")]
+        public async Task<IActionResult> Add(ProductCreateDto productDto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _productService.AddAsync(productDto, userId);
+            return Ok();
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Policy = "AdminOrSellerPolicy")]
+        public async Task<IActionResult> Update(Guid id, ProductUpdateDto productDto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            try
+            {
+                await _productService.UpdateAsync(id, productDto, userId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminOrSellerPolicy")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            try
+            {
+                await _productService.DeleteAsync(id, userId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

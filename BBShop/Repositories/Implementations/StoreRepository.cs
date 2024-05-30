@@ -47,5 +47,10 @@ namespace BBShop.Repositories.Implementations
                 .Where(s => s.StoreName.Contains(name))
                 .ToListAsync();
         }
+        
+        public async Task<Store> GetByUserIdAsync(string userId)
+        {
+            return await _context.Stores.FirstOrDefaultAsync(s => s.UserId == userId);
+        }
     }
 }

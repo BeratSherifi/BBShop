@@ -31,5 +31,15 @@ public class AppDbContext : IdentityDbContext<User>
             .HasOne(s => s.User)
             .WithMany(u => u.Stores)
             .HasForeignKey(s => s.UserId);
+        
+        modelBuilder.Entity<Product>()
+            .HasOne(p => p.Store)
+            .WithMany(s => s.Products)
+            .HasForeignKey(p => p.StoreId);
+
+        modelBuilder.Entity<Product>()
+            .HasOne(p => p.User)
+            .WithMany(u => u.Products)
+            .HasForeignKey(p => p.UserId);
     }
 }
