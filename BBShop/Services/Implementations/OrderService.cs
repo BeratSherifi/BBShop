@@ -40,30 +40,25 @@ namespace BBShop.Services.Implementations
             return _mapper.Map<IEnumerable<OrderDto>>(orders);
         }
 
-        public async Task AddAsync(OrderCreateDto orderDto, string userId)
+        public async Task<OrderDto> AddAsync(OrderCreateDto orderDto, string userId)
         {
             var order = _mapper.Map<Order>(orderDto);
-            order.UserId = userId; // Assign UserId directly
+            order.UserId = userId;
             order.OrderDate = DateTime.UtcNow;
             order.Status = "Pending";
-
             await _orderRepository.AddAsync(order);
+            return _mapper.Map<OrderDto>(order);
         }
 
-        public async Task UpdateStatusAsync(Guid orderId, string status)
+        public async Task UpdateStatusAsync(Guid id, string status)
         {
-            var order = await _orderRepository.GetByIdAsync(orderId);
+            var order = await _orderRepository.GetByIdAsync(id);
             if (order == null)
             {
-                throw new Exception("Order not found.");
+                throw new Exception("Order not found");
             }
             order.Status = status;
-            await _orderRepository.UpdateAsync(order);
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            await _orderRepository.DeleteAsync(id);
+            await _orderRepository.UpdateStatusAsync(order);
         }
     }
 }

@@ -20,18 +20,25 @@ namespace BBShop.Repositories.Implementations
 
         public async Task<Order> GetByIdAsync(Guid id)
         {
-            return await _context.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.OrderId == id);
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
         }
 
         public async Task<IEnumerable<Order>> GetAllAsync()
         {
-            return await _context.Orders.Include(o => o.OrderItems).ToListAsync();
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .ToListAsync();
         }
 
-        public async Task<IEnumerable<Order>> GetByStoreNameAsync(string storeName) // Add this method
+        public async Task<IEnumerable<Order>> GetByStoreNameAsync(string storeName)
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
                 .Where(o => o.Store.StoreName == storeName)
                 .ToListAsync();
         }
@@ -42,20 +49,10 @@ namespace BBShop.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Order order)
+        public async Task UpdateStatusAsync(Order order)
         {
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            var order = await _context.Orders.FindAsync(id);
-            if (order != null)
-            {
-                _context.Orders.Remove(order);
-                await _context.SaveChangesAsync();
-            }
         }
     }
 }

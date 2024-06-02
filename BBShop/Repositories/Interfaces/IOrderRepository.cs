@@ -9,9 +9,8 @@ namespace BBShop.Repositories.Interfaces
     {
         Task<Order> GetByIdAsync(Guid id);
         Task<IEnumerable<Order>> GetAllAsync();
-        Task<IEnumerable<Order>> GetByStoreNameAsync(string storeName); // Add this method
+        Task<IEnumerable<Order>> GetByStoreNameAsync(string storeName);
         Task AddAsync(Order order);
-        Task UpdateAsync(Order order);
-        Task DeleteAsync(Guid id);
+        Task UpdateStatusAsync(Order order);
     }
 }
