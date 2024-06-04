@@ -1,9 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\.idea",
-    "\\BBShop"
+    "\\BBShop",
+    "\\BBShop\\DTOs"
   ],
-  "SelectedNode": "\\BBShop.sln",
+  "SelectedNode": "\\BBShop\\DTOs\\StoreDto.cs",
   "PreviewInSolutionExplorer": false
 }

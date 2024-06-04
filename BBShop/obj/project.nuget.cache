@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xLGsJPKxlKNpZ2awT+yaqwHwU3HQIvoX8kVV1ClieprCg1C2HCvo6ocWfmEuHqYzqmYYbEWRJLkwLGyHU/3IPA==",
+  "dgSpecHash": "j5z+xcbFd9CVioj2eyZsb78eMCnoYpeqRAUW37jTEpyn8is85QsCs46d55IkHHhwc6eN/5F+vQ1/OzmZYXmh3Q==",
   "success": true,
-  "projectFilePath": "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\BBShop.csproj",
+  "projectFilePath": "C:\\Users\\User\\source\\repos\\BBShop\\BBShop\\BBShop.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\User\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
@@ -61,12 +61,5 @@
     "C:\\Users\\User\\.nuget\\packages\\system.text.encodings.web\\7.0.0\\system.text.encodings.web.7.0.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\system.text.json\\7.0.0\\system.text.json.7.0.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
-    }
-  ]
+  "logs": []
 }

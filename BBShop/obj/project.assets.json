@@ -2383,11 +2383,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\BBShop.csproj",
+      "projectUniqueName": "C:\\Users\\User\\source\\repos\\BBShop\\BBShop\\BBShop.csproj",
       "projectName": "BBShop",
-      "projectPath": "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\BBShop.csproj",
+      "projectPath": "C:\\Users\\User\\source\\repos\\BBShop\\BBShop\\BBShop.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\obj\\",
+      "outputPath": "C:\\Users\\User\\source\\repos\\BBShop\\BBShop\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
@@ -2500,13 +2500,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
-    }
-  ]
+  }
 }
