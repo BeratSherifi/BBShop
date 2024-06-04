@@ -2376,24 +2376,35 @@
     ]
   },
   "packageFolders": {
-    "/home/linux/.nuget/packages/": {}
+    "C:\\Users\\User\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/linux/RiderProjects/BBShop/BBShop/BBShop.csproj",
+      "projectUniqueName": "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\BBShop.csproj",
       "projectName": "BBShop",
-      "projectPath": "/home/linux/RiderProjects/BBShop/BBShop/BBShop.csproj",
-      "packagesPath": "/home/linux/.nuget/packages/",
-      "outputPath": "/home/linux/RiderProjects/BBShop/BBShop/obj/",
+      "projectPath": "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\BBShop.csproj",
+      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "/home/linux/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
+        "C:\\Program Files\\dotnet\\sdk\\7.0.304\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2486,8 +2497,16 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/home/linux/.dotnet/sdk/7.0.408/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }
