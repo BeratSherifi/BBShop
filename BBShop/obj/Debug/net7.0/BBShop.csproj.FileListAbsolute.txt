@@ -105,3 +105,4 @@ C:\Users\User\source\repos\BBShop\BBShop\obj\Debug\net7.0\refint\BBShop.dll
 C:\Users\User\source\repos\BBShop\BBShop\obj\Debug\net7.0\BBShop.pdb
 C:\Users\User\source\repos\BBShop\BBShop\obj\Debug\net7.0\BBShop.genruntimeconfig.cache
 C:\Users\User\source\repos\BBShop\BBShop\obj\Debug\net7.0\ref\BBShop.dll
+C:\Users\User\source\repos\BBShop\BBShop\bin\Debug\net7.0\BBShop.staticwebassets.runtime.json

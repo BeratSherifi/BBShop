@@ -1,6 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBShop", "BBShop\BBShop.csproj", "{DBE41744-BBAF-4EE6-ADAD-FC8CEAB25928}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BBShop", "BBShop\BBShop.csproj", "{DBE41744-BBAF-4EE6-ADAD-FC8CEAB25928}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OurShop.Tests", "OurShop.Tests\OurShop.Tests.csproj", "{9F748A6A-8D40-43D0-839F-797F78C7ABF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +17,15 @@ Global
 		{DBE41744-BBAF-4EE6-ADAD-FC8CEAB25928}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBE41744-BBAF-4EE6-ADAD-FC8CEAB25928}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBE41744-BBAF-4EE6-ADAD-FC8CEAB25928}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F748A6A-8D40-43D0-839F-797F78C7ABF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F748A6A-8D40-43D0-839F-797F78C7ABF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F748A6A-8D40-43D0-839F-797F78C7ABF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F748A6A-8D40-43D0-839F-797F78C7ABF9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A995ADFF-3C4F-4250-8C0F-3FCB40A3493E}
 	EndGlobalSection
 EndGlobal

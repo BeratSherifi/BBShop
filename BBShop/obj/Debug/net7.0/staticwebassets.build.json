@@ -1,11 +1,37 @@
 {
   "Version": 1,
-  "Hash": "38tpwfyBCs9pOh4s1rj6l/hTDNtcAuPly6+pPZI+7jw=",
+  "Hash": "sGOVQd7u81RFgcN8UPeFlq9ve/kcsJDfrA3mcN6PYRA=",
   "Source": "BBShop",
   "BasePath": "_content/BBShop",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "BBShop\\wwwroot",
+      "Source": "BBShop",
+      "ContentRoot": "C:\\Users\\User\\source\\repos\\BBShop\\BBShop\\wwwroot\\",
+      "BasePath": "_content/BBShop",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\User\\source\\repos\\BBShop\\BBShop\\wwwroot\\uploads\\stores\\c08d8c4a-f68f-4310-8ec8-fc5f2a096c2f.png",
+      "SourceId": "BBShop",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\source\\repos\\BBShop\\BBShop\\wwwroot\\",
+      "BasePath": "_content/BBShop",
+      "RelativePath": "uploads/stores/c08d8c4a-f68f-4310-8ec8-fc5f2a096c2f.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\stores\\c08d8c4a-f68f-4310-8ec8-fc5f2a096c2f.png"
+    }
+  ]
 }

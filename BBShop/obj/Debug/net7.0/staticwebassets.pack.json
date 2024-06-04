@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\User\\source\\repos\\BBShop\\BBShop\\wwwroot\\uploads\\stores\\c08d8c4a-f68f-4310-8ec8-fc5f2a096c2f.png",
+      "PackagePath": "staticwebassets\\uploads\\stores\\c08d8c4a-f68f-4310-8ec8-fc5f2a096c2f.png"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.BBShop.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.BBShop.props",
+      "PackagePath": "build\\BBShop.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.BBShop.props",
+      "PackagePath": "buildMultiTargeting\\BBShop.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.BBShop.props",
+      "PackagePath": "buildTransitive\\BBShop.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
