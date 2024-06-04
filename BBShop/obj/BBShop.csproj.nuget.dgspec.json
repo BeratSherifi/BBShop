@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\Source\\Repos\\BeratSherifi\\BBShop\\BBShop\\BBShop.csproj": {}
+    "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\BBShop.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\Source\\Repos\\BeratSherifi\\BBShop\\BBShop\\BBShop.csproj": {
+    "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\BBShop.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Source\\Repos\\BeratSherifi\\BBShop\\BBShop\\BBShop.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\BBShop.csproj",
         "projectName": "BBShop",
-        "projectPath": "C:\\Users\\User\\Source\\Repos\\BeratSherifi\\BBShop\\BBShop\\BBShop.csproj",
+        "projectPath": "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\BBShop.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Source\\Repos\\BeratSherifi\\BBShop\\BBShop\\obj\\",
+        "outputPath": "C:\\Users\\User\\Source\\Repos\\BBShop\\BBShop\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
