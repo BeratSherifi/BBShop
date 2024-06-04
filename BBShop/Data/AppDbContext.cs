@@ -34,16 +34,6 @@ namespace BBShop.Data
                 .WithMany(u => u.Products)
                 .HasForeignKey(p => p.UserId);
 
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.User)
-                .WithMany(u => u.Orders)
-                .HasForeignKey(o => o.UserId);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Store)
-                .WithMany(s => s.Orders)
-                .HasForeignKey(o => o.StoreId);
-
             modelBuilder.Entity<OrderItem>()
                 .HasOne(oi => oi.Order)
                 .WithMany(o => o.OrderItems)
@@ -53,7 +43,6 @@ namespace BBShop.Data
                 .HasOne(oi => oi.Product)
                 .WithMany(p => p.OrderItems)
                 .HasForeignKey(oi => oi.ProductId);
-
         }
     }
 }

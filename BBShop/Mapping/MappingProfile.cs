@@ -12,11 +12,15 @@ namespace BBShop.Mapping
             CreateMap<UserCreateDto, User>().ReverseMap();
             CreateMap<UserUpdateDto, User>().ReverseMap();
 
-            CreateMap<Store, StoreDto>().ReverseMap();
+            CreateMap<Store, StoreDto>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                .ReverseMap();
             CreateMap<StoreCreateDto, Store>();
             CreateMap<StoreUpdateDto, Store>();
 
-            CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<Product, ProductDto>()
+                .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.StoreName))
+                .ReverseMap();
             CreateMap<ProductCreateDto, Product>().ReverseMap();
             CreateMap<ProductUpdateDto, Product>().ReverseMap();
 
@@ -24,7 +28,6 @@ namespace BBShop.Mapping
             CreateMap<OrderCreateDto, Order>().ReverseMap();
             CreateMap<OrderItem, OrderItemDto>().ReverseMap();
             CreateMap<OrderItemCreateDto, OrderItem>().ReverseMap();
-            // Other mappings
         }
     }
 }

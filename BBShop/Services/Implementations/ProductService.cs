@@ -3,8 +3,11 @@ using BBShop.DTOs;
 using BBShop.Models;
 using BBShop.Repositories.Interfaces;
 using BBShop.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace BBShop.Services.Implementations
@@ -13,12 +16,14 @@ namespace BBShop.Services.Implementations
     {
         private readonly IProductRepository _productRepository;
         private readonly IStoreRepository _storeRepository;
+        private readonly IWebHostEnvironment _environment;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository, IStoreRepository storeRepository, IMapper mapper)
+        public ProductService(IProductRepository productRepository, IStoreRepository storeRepository, IWebHostEnvironment environment, IMapper mapper)
         {
             _productRepository = productRepository;
             _storeRepository = storeRepository;
+            _environment = environment;
             _mapper = mapper;
         }
 
@@ -51,6 +56,7 @@ namespace BBShop.Services.Implementations
             var product = _mapper.Map<Product>(productDto);
             product.StoreId = store.StoreId;
             product.UserId = userId;
+            product.ImageUrl = SaveFile(productDto.Image);
             await _productRepository.AddAsync(product);
         }
 
@@ -63,6 +69,7 @@ namespace BBShop.Services.Implementations
             }
 
             _mapper.Map(productDto, product);
+            product.ImageUrl = SaveFile(productDto.Image);
             await _productRepository.UpdateAsync(product);
         }
 
@@ -75,6 +82,23 @@ namespace BBShop.Services.Implementations
             }
 
             await _productRepository.DeleteAsync(product);
+        }
+
+        private string SaveFile(IFormFile file)
+        {
+            if (file == null) return null;
+
+            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "products");
+            Directory.CreateDirectory(uploadsFolder);
+
+            var filePath = Path.Combine(uploadsFolder, $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}");
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+
+            return filePath;
         }
     }
 }

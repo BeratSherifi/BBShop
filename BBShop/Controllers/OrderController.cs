@@ -45,7 +45,7 @@ namespace BBShop.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "buyer")]
+        [Authorize(Policy = "BuyerPolicy")]
         public async Task<IActionResult> Create([FromBody] OrderCreateDto orderDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -54,7 +54,7 @@ namespace BBShop.Controllers
         }
 
         [HttpPut("{id}/status")]
-        [Authorize(Roles = "seller")]
+        [Authorize(Policy = "SellerPolicy")]
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] string status)
         {
             await _orderService.UpdateStatusAsync(id, status);

@@ -37,7 +37,6 @@ namespace BBShop.Controllers
             return Ok(products);
         }
 
-       
         [HttpGet("store/{storeName}")]
         public async Task<IActionResult> GetByStoreName(string storeName)
         {
@@ -47,7 +46,7 @@ namespace BBShop.Controllers
 
         [HttpPost]
         [Authorize(Policy = "AdminOrSellerPolicy")]
-        public async Task<IActionResult> Add(ProductCreateDto productDto)
+        public async Task<IActionResult> Add([FromForm] ProductCreateDto productDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _productService.AddAsync(productDto, userId);
@@ -56,7 +55,7 @@ namespace BBShop.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Policy = "AdminOrSellerPolicy")]
-        public async Task<IActionResult> Update(Guid id, ProductUpdateDto productDto)
+        public async Task<IActionResult> Update(Guid id, [FromForm] ProductUpdateDto productDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             try

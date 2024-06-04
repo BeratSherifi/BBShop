@@ -12,5 +12,6 @@ namespace BBShop.Models
         public string UserId { get; set; }
         public User User { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
+        public string ImageUrl { get; set; } // Add this property for the product image
     }
 }

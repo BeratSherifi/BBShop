@@ -100,6 +100,9 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddScoped<TokenService>();
 
+// Add IWebHostEnvironment for file handling
+builder.Services.AddSingleton<IWebHostEnvironment>(builder.Environment);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -113,6 +116,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(); // Enable serving static files
 
 app.UseAuthentication();
 app.UseAuthorization();

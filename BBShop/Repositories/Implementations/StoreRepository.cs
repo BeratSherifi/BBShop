@@ -1,26 +1,30 @@
 using AutoMapper;
 using BBShop.Data;
-using BBShop.DTOs;
 using BBShop.Models;
 using BBShop.Repositories.Interfaces;
-using BBShop.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BBShop.Repositories.Implementations
 {
     public class StoreRepository : IStoreRepository
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public StoreRepository(AppDbContext context)
+        public StoreRepository(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Store> GetByIdAsync(Guid id)
         {
-            return await _context.Stores.FindAsync(id);
+            return await _context.Stores
+                .Include(s => s.User)
+                .FirstOrDefaultAsync(s => s.StoreId == id);
         }
 
         public async Task AddAsync(Store store)
@@ -44,13 +48,16 @@ namespace BBShop.Repositories.Implementations
         public async Task<IEnumerable<Store>> SearchByNameAsync(string name)
         {
             return await _context.Stores
+                .Include(s => s.User)
                 .Where(s => s.StoreName.Contains(name))
                 .ToListAsync();
         }
-        
+
         public async Task<Store> GetByUserIdAsync(string userId)
         {
-            return await _context.Stores.FirstOrDefaultAsync(s => s.UserId == userId);
+            return await _context.Stores
+                .Include(s => s.User)
+                .FirstOrDefaultAsync(s => s.UserId == userId);
         }
     }
 }
