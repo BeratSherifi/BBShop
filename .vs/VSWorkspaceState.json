@@ -3,8 +3,9 @@
     "",
     "\\.idea",
     "\\BBShop",
-    "\\BBShop\\Controllers"
+    "\\BBShop\\Controllers",
+    "\\BBShop\\DTOs"
   ],
-  "SelectedNode": "\\BBShop.sln",
+  "SelectedNode": "\\BBShop\\DTOs\\OrderDto.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -3,8 +3,8 @@ using BBShop.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Threading.Tasks;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace BBShop.Controllers
 {
@@ -49,8 +49,8 @@ namespace BBShop.Controllers
         public async Task<IActionResult> Create([FromBody] OrderCreateDto orderDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _orderService.AddAsync(orderDto, userId);
-            return CreatedAtAction(nameof(GetById), new { id = orderDto.OrderId }, orderDto);
+            var order = await _orderService.AddAsync(orderDto, userId);
+            return CreatedAtAction(nameof(GetById), new { id = order.OrderId }, order);
         }
 
         [HttpPut("{id}/status")]
