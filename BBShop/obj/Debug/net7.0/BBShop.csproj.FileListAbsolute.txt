@@ -51,3 +51,4 @@
 /home/linux/RiderProjects/BBShop/BBShop/obj/Debug/net7.0/BBShop.pdb
 /home/linux/RiderProjects/BBShop/BBShop/obj/Debug/net7.0/BBShop.genruntimeconfig.cache
 /home/linux/RiderProjects/BBShop/BBShop/obj/Debug/net7.0/ref/BBShop.dll
+/home/linux/RiderProjects/BBShop/BBShop/bin/Debug/net7.0/BBShop.staticwebassets.runtime.json

@@ -3,23 +3,25 @@ using BBShop.DTOs;
 using BBShop.Models;
 using BBShop.Repositories.Interfaces;
 using BBShop.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
 namespace BBShop.Services.Implementations
 {
     public class StoreService : IStoreService
     {
         private readonly IStoreRepository _storeRepository;
-        private readonly UserManager<User> _userManager; 
+        private readonly IWebHostEnvironment _environment;
         private readonly IMapper _mapper;
 
-        public StoreService(IStoreRepository storeRepository, UserManager<User> userManager, IMapper mapper)
+        public StoreService(IStoreRepository storeRepository, IWebHostEnvironment environment, IMapper mapper)
         {
             _storeRepository = storeRepository;
-            _userManager = userManager;
+            _environment = environment;
             _mapper = mapper;
         }
 
@@ -31,20 +33,14 @@ namespace BBShop.Services.Implementations
 
         public async Task<StoreDto> AddAsync(StoreCreateDto storeDto, string userId)
         {
-            if (!await _userManager.IsInRoleAsync(await _userManager.FindByIdAsync(userId), "Seller"))
-            {
-                throw new Exception("Only sellers can create stores.");
-            }
-
             var store = _mapper.Map<Store>(storeDto);
             store.UserId = userId;
             store.CreatedAt = DateTime.UtcNow;
             store.UpdatedAt = DateTime.UtcNow;
+            store.LogoUrl = SaveFile(storeDto.Logo);
             await _storeRepository.AddAsync(store);
-    
-            return _mapper.Map<StoreDto>(store); // Return the created store with StoreId
+            return _mapper.Map<StoreDto>(store);
         }
-
 
         public async Task UpdateAsync(Guid id, StoreUpdateDto storeDto)
         {
@@ -56,6 +52,7 @@ namespace BBShop.Services.Implementations
 
             _mapper.Map(storeDto, store);
             store.UpdatedAt = DateTime.UtcNow;
+            store.LogoUrl = SaveFile(storeDto.Logo);
             await _storeRepository.UpdateAsync(store);
         }
 
@@ -74,6 +71,23 @@ namespace BBShop.Services.Implementations
         {
             var stores = await _storeRepository.SearchByNameAsync(name);
             return _mapper.Map<IEnumerable<StoreDto>>(stores);
+        }
+
+        private string SaveFile(IFormFile file)
+        {
+            if (file == null) return null;
+
+            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "stores");
+            Directory.CreateDirectory(uploadsFolder);
+
+            var filePath = Path.Combine(uploadsFolder, $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}");
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+
+            return filePath;
         }
     }
 }

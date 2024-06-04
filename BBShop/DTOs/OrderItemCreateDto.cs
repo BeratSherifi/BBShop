@@ -1,8 +1,8 @@
-namespace BBShop.DTOs;
-
-public class OrderItemCreateDto
+namespace BBShop.DTOs
 {
-    public Guid ProductId { get; set; }
-    public int Quantity { get; set; }
-    public decimal UnitPrice { get; set; }
+    public class OrderItemCreateDto
+    {
+        public Guid ProductId { get; set; }
+        public int Quantity { get; set; }
+    }
 }

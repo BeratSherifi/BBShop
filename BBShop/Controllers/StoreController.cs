@@ -1,9 +1,10 @@
 using BBShop.DTOs;
 using BBShop.Services.Interfaces;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace BBShop.Controllers
 {
@@ -12,12 +13,10 @@ namespace BBShop.Controllers
     public class StoreController : ControllerBase
     {
         private readonly IStoreService _storeService;
-        private readonly IMapper _mapper;
 
-        public StoreController(IStoreService storeService, IMapper mapper)
+        public StoreController(IStoreService storeService)
         {
             _storeService = storeService;
-            _mapper = mapper;
         }
 
         [HttpGet("{id}")]
@@ -34,17 +33,16 @@ namespace BBShop.Controllers
 
         [HttpPost]
         [Authorize(Policy = "AdminOrSellerPolicy")] // Only Admin and Seller can access
-        public async Task<IActionResult> Create([FromBody] StoreCreateDto storeDto)
+        public async Task<IActionResult> Create([FromForm] StoreCreateDto storeDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var createdStore = await _storeService.AddAsync(storeDto, userId);
             return CreatedAtAction(nameof(GetById), new { id = createdStore.StoreId }, createdStore);
         }
 
-
         [HttpPut("{id}")]
         [Authorize(Policy = "AdminOrSellerPolicy")] // Only Admin and Seller can access
-        public async Task<IActionResult> Update(Guid id, [FromBody] StoreUpdateDto storeDto)
+        public async Task<IActionResult> Update(Guid id, [FromForm] StoreUpdateDto storeDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var store = await _storeService.GetByIdAsync(id);

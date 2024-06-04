@@ -1,94 +1,64 @@
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using BBShop.DTOs;
 using BBShop.Models;
 using BBShop.Repositories.Interfaces;
 using BBShop.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace BBShop.Services.Implementations;
-
-public class OrderService : IOrderService
+namespace BBShop.Services.Implementations
 {
-    private readonly IOrderRepository _orderRepository;
-    private readonly IProductRepository _productRepository;
-    private readonly IMapper _mapper;
-
-    public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IMapper mapper)
+    public class OrderService : IOrderService
     {
-        _orderRepository = orderRepository;
-        _productRepository = productRepository;
-        _mapper = mapper;
-    }
+        private readonly IOrderRepository _orderRepository;
+        private readonly IStoreRepository _storeRepository;
+        private readonly IMapper _mapper;
 
-    public async Task<OrderDto> GetByIdAsync(Guid id)
-    {
-        var order = await _orderRepository.GetByIdAsync(id);
-        return _mapper.Map<OrderDto>(order);
-    }
-
-    public async Task<IEnumerable<OrderDto>> GetAllAsync()
-    {
-        var orders = await _orderRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<OrderDto>>(orders);
-    }
-
-    public async Task AddAsync(OrderCreateDto orderDto)
-    {
-        var order = new Order
+        public OrderService(IOrderRepository orderRepository, IStoreRepository storeRepository, IMapper mapper)
         {
-            BuyerId = orderDto.BuyerId,
-            Status = OrderStatus.Pending,  // Ensure the status is set to Pending
-            OrderItems = new List<OrderItem>()
-        };
+            _orderRepository = orderRepository;
+            _storeRepository = storeRepository;
+            _mapper = mapper;
+        }
 
-        foreach (var item in orderDto.OrderItems)
+        public async Task<OrderDto> GetByIdAsync(Guid id)
         {
-            var product = await _productRepository.GetByIdAsync(item.ProductId);
-            if (product == null || product.StockQuantity < item.Quantity)
+            var order = await _orderRepository.GetByIdAsync(id);
+            return _mapper.Map<OrderDto>(order);
+        }
+
+        public async Task<IEnumerable<OrderDto>> GetAllAsync()
+        {
+            var orders = await _orderRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<OrderDto>>(orders);
+        }
+
+        public async Task<IEnumerable<OrderDto>> GetByStoreNameAsync(string storeName)
+        {
+            var orders = await _orderRepository.GetByStoreNameAsync(storeName);
+            return _mapper.Map<IEnumerable<OrderDto>>(orders);
+        }
+
+        public async Task<OrderDto> AddAsync(OrderCreateDto orderDto, string userId)
+        {
+            var order = _mapper.Map<Order>(orderDto);
+            order.UserId = userId;
+            order.OrderDate = DateTime.UtcNow;
+            order.Status = "Pending";
+            await _orderRepository.AddAsync(order);
+            return _mapper.Map<OrderDto>(order);
+        }
+
+        public async Task UpdateStatusAsync(Guid id, string status)
+        {
+            var order = await _orderRepository.GetByIdAsync(id);
+            if (order == null)
             {
-                throw new Exception($"Product with ID {item.ProductId} is not available or out of stock.");
+                throw new Exception("Order not found");
             }
-
-            var orderItem = new OrderItem
-            {
-                ProductId = item.ProductId,
-                Quantity = item.Quantity,
-                UnitPrice = item.UnitPrice
-            };
-
-            order.OrderItems.Add(orderItem);
+            order.Status = status;
+            await _orderRepository.UpdateStatusAsync(order);
         }
-
-        await _orderRepository.AddAsync(order);
-    }
-    public async Task UpdateAsync(Guid orderId, OrderDto orderDto)
-    {
-        var order = await _orderRepository.GetByIdAsync(orderId);
-        if (order == null)
-        {
-            throw new Exception("Order not found");
-        }
-
-        order.Status = orderDto.Status;
-        await _orderRepository.UpdateAsync(order);
-    }
-    
-    public async Task UpdateStatusAsync(Guid orderId, OrderStatusUpdateDto statusUpdateDto)  // New method
-    {
-        var order = await _orderRepository.GetByIdAsync(orderId);
-        if (order == null)
-        {
-            throw new Exception("Order not found");
-        }
-
-        order.Status = statusUpdateDto.Status;
-        await _orderRepository.UpdateAsync(order);
-    }
-
-    public async Task DeleteAsync(Guid id)
-    {
-        await _orderRepository.DeleteAsync(id);
     }
 }

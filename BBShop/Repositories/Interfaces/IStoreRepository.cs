@@ -1,12 +1,17 @@
 using BBShop.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace BBShop.Repositories.Interfaces;
-
-public interface IStoreRepository
+namespace BBShop.Repositories.Interfaces
 {
-    Task<Store> GetByIdAsync(Guid id);
-    Task AddAsync(Store store);
-    Task UpdateAsync(Store store);
-    Task DeleteAsync(Store store);
-    Task<IEnumerable<Store>> SearchByNameAsync(string name);
+    public interface IStoreRepository
+    {
+        Task<Store> GetByIdAsync(Guid id);
+        Task AddAsync(Store store);
+        Task UpdateAsync(Store store);
+        Task DeleteAsync(Store store);
+        Task<IEnumerable<Store>> SearchByNameAsync(string name);
+        Task<Store> GetByUserIdAsync(string userId);
+    }
 }

@@ -1,6 +1,8 @@
-namespace BBShop.DTOs;
-
-public class StoreUpdateDto
+namespace BBShop.DTOs
 {
-    public string StoreName { get; set; }
+    public class StoreUpdateDto
+    {
+        public string StoreName { get; set; }
+        public IFormFile Logo { get; set; }  // Add this property
+    }
 }

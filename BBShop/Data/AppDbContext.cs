@@ -1,35 +1,48 @@
 using BBShop.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace BBShop.Data;
-
-public class AppDbContext : IdentityDbContext<User>
+namespace BBShop.Data
 {
-    public DbSet<Store> Stores { get; set; }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderItem> OrderItems { get; set; }
-    public DbSet<ShoppingCart> ShoppingCarts { get; set; }
-    public DbSet<CartItem> CartItems { get; set; }
-
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public class AppDbContext : IdentityDbContext<User>
     {
-        base.OnModelCreating(modelBuilder);
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
 
-        modelBuilder.Entity<ShoppingCart>().HasKey(sc => sc.CartId);
-        modelBuilder.Entity<CartItem>().HasKey(ci => ci.CartItemId);
-        modelBuilder.Entity<Store>().HasKey(s => s.StoreId);
-        modelBuilder.Entity<Product>().HasKey(p => p.ProductId);
-        modelBuilder.Entity<Order>().HasKey(o => o.OrderId);
-        modelBuilder.Entity<OrderItem>().HasKey(oi => oi.OrderItemId);
+        public DbSet<Store> Stores { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
-        modelBuilder.Entity<Store>()
-            .HasOne(s => s.User)
-            .WithMany(u => u.Stores)
-            .HasForeignKey(s => s.UserId);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Store>()
+                .HasOne(s => s.User)
+                .WithMany(u => u.Stores)
+                .HasForeignKey(s => s.UserId);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Store)
+                .WithMany(s => s.Products)
+                .HasForeignKey(p => p.StoreId);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Products)
+                .HasForeignKey(p => p.UserId);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Product)
+                .WithMany(p => p.OrderItems)
+                .HasForeignKey(oi => oi.ProductId);
+        }
     }
 }
