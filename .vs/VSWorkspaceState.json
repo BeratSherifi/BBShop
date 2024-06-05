@@ -2,8 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\BBShop",
-    "\\BBShop\\Controllers"
+    "\\BBShop\\Controllers",
+    "\\BBShop\\DTOs",
+    "\\OurShop.Tests",
+    "\\OurShop.Tests\\Repositories"
   ],
-  "SelectedNode": "\\BBShop\\Controllers\\UserController.cs",
+  "SelectedNode": "\\OurShop.Tests\\Repositories\\OrderRepositoryTest.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OurShop.Tests.Services.Implementations
+namespace OurShop.Tests.Services
 {
     internal class OrderServiceTest
     {

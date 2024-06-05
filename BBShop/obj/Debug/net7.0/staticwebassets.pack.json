@@ -1,6 +1,14 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\User\\source\\repos\\BBShop\\BBShop\\wwwroot\\uploads\\products\\0dfb7ba1-d392-430c-9a38-f89cc8356e20.jpg",
+      "PackagePath": "staticwebassets\\uploads\\products\\0dfb7ba1-d392-430c-9a38-f89cc8356e20.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\source\\repos\\BBShop\\BBShop\\wwwroot\\uploads\\products\\7e3a268f-6c9b-42b9-a3a7-bc1fdedc82b0.jpg",
+      "PackagePath": "staticwebassets\\uploads\\products\\7e3a268f-6c9b-42b9-a3a7-bc1fdedc82b0.jpg"
+    },
+    {
       "Id": "C:\\Users\\User\\source\\repos\\BBShop\\BBShop\\wwwroot\\uploads\\stores\\c08d8c4a-f68f-4310-8ec8-fc5f2a096c2f.png",
       "PackagePath": "staticwebassets\\uploads\\stores\\c08d8c4a-f68f-4310-8ec8-fc5f2a096c2f.png"
     },
