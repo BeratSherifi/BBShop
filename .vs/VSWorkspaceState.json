@@ -2,8 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\BBShop",
-    "\\BBShop\\DTOs"
+    "\\BBShop\\Controllers"
   ],
-  "SelectedNode": "\\BBShop\\DTOs\\StoreDto.cs",
+  "SelectedNode": "\\BBShop\\Controllers\\UserController.cs",
   "PreviewInSolutionExplorer": false
 }

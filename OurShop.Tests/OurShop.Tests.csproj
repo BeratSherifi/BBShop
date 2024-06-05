@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Implementations\" />
+    <ProjectReference Include="..\BBShop\BBShop.csproj" />
   </ItemGroup>
 
 </Project>

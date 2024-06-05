@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "cs5CsyuPzA4Vi4R49iy4ZEKB6woJoENA6kyqa8OUW7c8TKvvEholchkkPadoUhVLq3E1ASj9XlZME4poi6AdKw==",
+  "dgSpecHash": "26YmegkxqkHX3vN0sHS3w4qWWBAKVzY+E864oQZ9beE8v2iPLB6bRLWzQatTH+zalZXvFyyHi3qBjd/aUaT0yA==",
   "success": true,
   "projectFilePath": "C:\\Users\\User\\source\\repos\\BBShop\\OurShop.Tests\\OurShop.Tests.csproj",
   "expectedPackageFiles": [
@@ -22,6 +22,7 @@
     "C:\\Users\\User\\.nuget\\packages\\microsoft.entityframeworkcore\\7.0.0\\microsoft.entityframeworkcore.7.0.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\7.0.0\\microsoft.entityframeworkcore.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\7.0.0\\microsoft.entityframeworkcore.analyzers.7.0.0.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\7.0.0\\microsoft.entityframeworkcore.inmemory.7.0.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\7.0.0\\microsoft.entityframeworkcore.relational.7.0.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\7.0.0\\microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
