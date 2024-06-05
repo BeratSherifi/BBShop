@@ -2,7 +2,6 @@
 using BBShop.Models;
 using BBShop.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,37 +12,45 @@ namespace OurShop.Tests.Repositories
 {
     public class StoreRepositoryTest
     {
-        private readonly Mock<AppDbContext> _mockContext;
-        private readonly Mock<DbSet<Store>> _mockSet;
         private readonly StoreRepository _storeRepository;
+        private readonly AppDbContext _context;
 
         public StoreRepositoryTest()
         {
-            _mockContext = new Mock<AppDbContext>();
-            _mockSet = new Mock<DbSet<Store>>();
-            _storeRepository = new StoreRepository(_mockContext.Object, null); // assuming mapper is not used in tests
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase_Store")
+                .Options;
+
+            _context = new AppDbContext(options);
+            _storeRepository = new StoreRepository(_context, null); // Assuming mapper is not needed for tests
+
+            // Ensure the database is clean before each test
+            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
         }
 
-        private void SetupMockDbSet(IQueryable<Store> stores)
+        private void SeedDatabase()
         {
-            _mockSet.As<IQueryable<Store>>().Setup(m => m.Provider).Returns(stores.Provider);
-            _mockSet.As<IQueryable<Store>>().Setup(m => m.Expression).Returns(stores.Expression);
-            _mockSet.As<IQueryable<Store>>().Setup(m => m.ElementType).Returns(stores.ElementType);
-            _mockSet.As<IQueryable<Store>>().Setup(m => m.GetEnumerator()).Returns(stores.GetEnumerator());
-            _mockContext.Setup(c => c.Stores).Returns(_mockSet.Object);
+            // Clear existing data
+            _context.Stores.RemoveRange(_context.Stores);
+            _context.SaveChanges();
+
+            var stores = new List<Store>
+            {
+                new Store { StoreId = Guid.NewGuid(), StoreName = "Test Store 1", UserId = "user1", LogoUrl = "logo1.png", CreatedAt = DateTime.Now },
+                new Store { StoreId = Guid.NewGuid(), StoreName = "Test Store 2", UserId = "user2", LogoUrl = "logo2.png", CreatedAt = DateTime.Now }
+            };
+
+            _context.Stores.AddRange(stores);
+            _context.SaveChanges();
         }
 
         [Fact]
         public async Task GetByIdAsync_ShouldReturnStore_WhenStoreExists()
         {
+            SeedDatabase();
             // Arrange
-            var storeId = Guid.NewGuid();
-            var stores = new List<Store>
-            {
-                new Store { StoreId = storeId, StoreName = "Test Store 1", UserId = "user1", CreatedAt = DateTime.Now }
-            }.AsQueryable();
-
-            SetupMockDbSet(stores);
+            var storeId = _context.Stores.First().StoreId;
 
             // Act
             var result = await _storeRepository.GetByIdAsync(storeId);
@@ -56,83 +63,72 @@ namespace OurShop.Tests.Repositories
         [Fact]
         public async Task AddAsync_ShouldAddStore()
         {
+            SeedDatabase();
             // Arrange
-            var newStore = new Store { StoreId = Guid.NewGuid(), StoreName = "Test Store 2", UserId = "user2", CreatedAt = DateTime.Now };
+            var newStore = new Store { StoreId = Guid.NewGuid(), StoreName = "Test Store 3", UserId = "user3", LogoUrl = "logo3.png", CreatedAt = DateTime.Now };
 
             // Act
             await _storeRepository.AddAsync(newStore);
 
             // Assert
-            _mockSet.Verify(m => m.AddAsync(newStore, default), Times.Once());
-            _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+            Assert.Equal(3, _context.Stores.Count());
         }
 
         [Fact]
         public async Task UpdateAsync_ShouldUpdateStore()
         {
+            SeedDatabase();
             // Arrange
-            var store = new Store { StoreId = Guid.NewGuid(), StoreName = "Test Store 1", UserId = "user1", CreatedAt = DateTime.Now };
+            var store = _context.Stores.First();
+            store.StoreName = "Updated Store";
 
             // Act
-            store.StoreName = "Updated Store";
             await _storeRepository.UpdateAsync(store);
 
             // Assert
-            _mockSet.Verify(m => m.Update(store), Times.Once());
-            _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+            var updatedStore = _context.Stores.First();
+            Assert.Equal("Updated Store", updatedStore.StoreName);
         }
 
         [Fact]
         public async Task DeleteAsync_ShouldRemoveStore()
         {
+            SeedDatabase();
             // Arrange
-            var storeId = Guid.NewGuid();
-            var store = new Store { StoreId = storeId, StoreName = "Test Store 1", UserId = "user1", CreatedAt = DateTime.Now };
-            var stores = new List<Store> { store }.AsQueryable();
-
-            SetupMockDbSet(stores);
+            var storeId = _context.Stores.First().StoreId;
+            var store = await _storeRepository.GetByIdAsync(storeId);
 
             // Act
-            await _storeRepository.DeleteAsync(store);
+            if (store != null)
+            {
+                await _storeRepository.DeleteAsync(store);
+            }
 
             // Assert
-            _mockSet.Verify(m => m.Remove(store), Times.Once());
-            _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+            Assert.Equal(1, _context.Stores.Count());
         }
 
         [Fact]
         public async Task SearchByNameAsync_ShouldReturnStores_WhenStoreNameMatches()
         {
+            SeedDatabase();
             // Arrange
-            var storeName = "Test Store";
-            var stores = new List<Store>
-            {
-                new Store { StoreId = Guid.NewGuid(), StoreName = "Test Store 1", UserId = "user1", CreatedAt = DateTime.Now },
-                new Store { StoreId = Guid.NewGuid(), StoreName = "Another Store", UserId = "user2", CreatedAt = DateTime.Now }
-            }.AsQueryable();
-
-            SetupMockDbSet(stores);
+            var storeName = "Test Store 1";
 
             // Act
             var result = await _storeRepository.SearchByNameAsync(storeName);
 
             // Assert
             Assert.Single(result);
-            Assert.Contains(result, s => s.StoreName.Contains(storeName));
+            Assert.Contains(result, s => s.StoreName == storeName);
         }
 
         [Fact]
         public async Task GetByUserIdAsync_ShouldReturnStore_WhenUserIdMatches()
         {
+            SeedDatabase();
             // Arrange
             var userId = "user1";
-            var stores = new List<Store>
-            {
-                new Store { StoreId = Guid.NewGuid(), StoreName = "Test Store 1", UserId = userId, CreatedAt = DateTime.Now },
-                new Store { StoreId = Guid.NewGuid(), StoreName = "Another Store", UserId = "user2", CreatedAt = DateTime.Now }
-            }.AsQueryable();
-
-            SetupMockDbSet(stores);
 
             // Act
             var result = await _storeRepository.GetByUserIdAsync(userId);

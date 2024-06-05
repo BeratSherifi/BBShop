@@ -2,7 +2,7 @@
 using BBShop.Models;
 using BBShop.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
-using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,37 +12,45 @@ namespace OurShop.Tests.Repositories
 {
     public class UserRepositoryTest
     {
-        private readonly Mock<AppDbContext> _mockContext;
-        private readonly Mock<DbSet<User>> _mockSet;
         private readonly UserRepository _userRepository;
+        private readonly AppDbContext _context;
 
         public UserRepositoryTest()
         {
-            _mockContext = new Mock<AppDbContext>();
-            _mockSet = new Mock<DbSet<User>>();
-            _userRepository = new UserRepository(_mockContext.Object);
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase_User")
+                .Options;
+
+            _context = new AppDbContext(options);
+            _userRepository = new UserRepository(_context);
+
+            // Ensure the database is clean before each test
+            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
         }
 
-        private void SetupMockDbSet(IQueryable<User> users)
+        private void SeedDatabase()
         {
-            _mockSet.As<IQueryable<User>>().Setup(m => m.Provider).Returns(users.Provider);
-            _mockSet.As<IQueryable<User>>().Setup(m => m.Expression).Returns(users.Expression);
-            _mockSet.As<IQueryable<User>>().Setup(m => m.ElementType).Returns(users.ElementType);
-            _mockSet.As<IQueryable<User>>().Setup(m => m.GetEnumerator()).Returns(users.GetEnumerator());
-            _mockContext.Setup(c => c.Users).Returns(_mockSet.Object);
+            // Clear existing data
+            _context.Users.RemoveRange(_context.Users);
+            _context.SaveChanges();
+
+            var users = new List<User>
+            {
+                new User { Id = "user1", UserName = "user1@example.com", FullName = "User One", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
+                new User { Id = "user2", UserName = "user2@example.com", FullName = "User Two", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now }
+            };
+
+            _context.Users.AddRange(users);
+            _context.SaveChanges();
         }
 
         [Fact]
         public async Task GetByIdAsync_ShouldReturnUser_WhenUserExists()
         {
+            SeedDatabase();
             // Arrange
-            var userId = "user1";
-            var users = new List<User>
-            {
-                new User { Id = userId, FullName = "Test User 1", CreatedAt = DateTime.Now }
-            }.AsQueryable();
-
-            SetupMockDbSet(users);
+            var userId = _context.Users.First().Id;
 
             // Act
             var result = await _userRepository.GetByIdAsync(userId);
@@ -55,15 +63,7 @@ namespace OurShop.Tests.Repositories
         [Fact]
         public async Task GetAllAsync_ShouldReturnAllUsers()
         {
-            // Arrange
-            var users = new List<User>
-            {
-                new User { Id = "user1", FullName = "Test User 1", CreatedAt = DateTime.Now },
-                new User { Id = "user2", FullName = "Test User 2", CreatedAt = DateTime.Now }
-            }.AsQueryable();
-
-            SetupMockDbSet(users);
-
+            SeedDatabase();
             // Act
             var result = await _userRepository.GetAllAsync();
 
@@ -74,48 +74,49 @@ namespace OurShop.Tests.Repositories
         [Fact]
         public async Task AddAsync_ShouldAddUser()
         {
+            SeedDatabase();
             // Arrange
-            var newUser = new User { Id = "user3", FullName = "Test User 3", CreatedAt = DateTime.Now };
+            var newUser = new User { Id = "user3", UserName = "user3@example.com", FullName = "User Three", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now };
 
             // Act
             await _userRepository.AddAsync(newUser);
 
             // Assert
-            _mockSet.Verify(m => m.AddAsync(newUser, default), Times.Once());
-            _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+            Assert.Equal(3, _context.Users.Count());
         }
 
         [Fact]
         public async Task UpdateAsync_ShouldUpdateUser()
         {
+            SeedDatabase();
             // Arrange
-            var user = new User { Id = "user1", FullName = "Test User 1", CreatedAt = DateTime.Now };
+            var user = _context.Users.First();
+            user.FullName = "Updated User";
 
             // Act
-            user.FullName = "Updated User";
             await _userRepository.UpdateAsync(user);
 
             // Assert
-            _mockSet.Verify(m => m.Update(user), Times.Once());
-            _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+            var updatedUser = _context.Users.First();
+            Assert.Equal("Updated User", updatedUser.FullName);
         }
 
         [Fact]
         public async Task DeleteAsync_ShouldRemoveUser()
         {
+            SeedDatabase();
             // Arrange
-            var userId = "user1";
-            var user = new User { Id = userId, FullName = "Test User 1", CreatedAt = DateTime.Now };
-            var users = new List<User> { user }.AsQueryable();
-
-            SetupMockDbSet(users);
+            var userId = _context.Users.First().Id;
+            var user = await _userRepository.GetByIdAsync(userId);
 
             // Act
-            await _userRepository.DeleteAsync(userId);
+            if (user != null)
+            {
+                await _userRepository.DeleteAsync(userId);
+            }
 
             // Assert
-            _mockSet.Verify(m => m.Remove(user), Times.Once());
-            _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+            Assert.Equal(1, _context.Users.Count());
         }
     }
 }

@@ -2,7 +2,6 @@
 using BBShop.Models;
 using BBShop.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,37 +12,51 @@ namespace OurShop.Tests.Repositories
 {
     public class ProductRepositoryTest
     {
-        private readonly Mock<AppDbContext> _mockContext;
-        private readonly Mock<DbSet<Product>> _mockSet;
         private readonly ProductRepository _productRepository;
+        private readonly AppDbContext _context;
 
         public ProductRepositoryTest()
         {
-            _mockContext = new Mock<AppDbContext>();
-            _mockSet = new Mock<DbSet<Product>>();
-            _productRepository = new ProductRepository(_mockContext.Object);
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase_Product")
+                .Options;
+
+            _context = new AppDbContext(options);
+            _productRepository = new ProductRepository(_context);
+
+            // Ensure the database is clean before each test
+            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
         }
 
-        private void SetupMockDbSet(IQueryable<Product> products)
+        private void SeedDatabase()
         {
-            _mockSet.As<IQueryable<Product>>().Setup(m => m.Provider).Returns(products.Provider);
-            _mockSet.As<IQueryable<Product>>().Setup(m => m.Expression).Returns(products.Expression);
-            _mockSet.As<IQueryable<Product>>().Setup(m => m.ElementType).Returns(products.ElementType);
-            _mockSet.As<IQueryable<Product>>().Setup(m => m.GetEnumerator()).Returns(products.GetEnumerator());
-            _mockContext.Setup(c => c.Products).Returns(_mockSet.Object);
+            // Clear existing data
+            _context.Products.RemoveRange(_context.Products);
+            _context.Stores.RemoveRange(_context.Stores);
+            _context.SaveChanges();
+
+            var store1 = new Store { StoreId = Guid.NewGuid(), StoreName = "Test Store 1", UserId = "user1", LogoUrl = "logo1.png", CreatedAt = DateTime.Now };
+            var store2 = new Store { StoreId = Guid.NewGuid(), StoreName = "Test Store 2", UserId = "user2", LogoUrl = "logo2.png", CreatedAt = DateTime.Now };
+            _context.Stores.AddRange(store1, store2);
+            _context.SaveChanges();
+
+            var products = new List<Product>
+            {
+                new Product { ProductId = Guid.NewGuid(), ProductName = "Test Product 1", Description = "Description 1", Price = 100, StockQuantity = 10, StoreId = store1.StoreId, UserId = "user1", ImageUrl = "image1.png" },
+                new Product { ProductId = Guid.NewGuid(), ProductName = "Test Product 2", Description = "Description 2", Price = 200, StockQuantity = 20, StoreId = store2.StoreId, UserId = "user2", ImageUrl = "image2.png" }
+            };
+
+            _context.Products.AddRange(products);
+            _context.SaveChanges();
         }
 
         [Fact]
         public async Task GetByIdAsync_ShouldReturnProduct_WhenProductExists()
         {
+            SeedDatabase();
             // Arrange
-            var productId = Guid.NewGuid();
-            var products = new List<Product>
-            {
-                new Product { ProductId = productId, ProductName = "Test Product 1", Price = 100, StoreId = Guid.NewGuid(), UserId = "user1" }
-            }.AsQueryable();
-
-            SetupMockDbSet(products);
+            var productId = _context.Products.First().ProductId;
 
             // Act
             var result = await _productRepository.GetByIdAsync(productId);
@@ -56,15 +69,7 @@ namespace OurShop.Tests.Repositories
         [Fact]
         public async Task GetAllAsync_ShouldReturnAllProducts()
         {
-            // Arrange
-            var products = new List<Product>
-            {
-                new Product { ProductId = Guid.NewGuid(), ProductName = "Test Product 1", Price = 100, StoreId = Guid.NewGuid(), UserId = "user1" },
-                new Product { ProductId = Guid.NewGuid(), ProductName = "Test Product 2", Price = 200, StoreId = Guid.NewGuid(), UserId = "user2" }
-            }.AsQueryable();
-
-            SetupMockDbSet(products);
-
+            SeedDatabase();
             // Act
             var result = await _productRepository.GetAllAsync();
 
@@ -75,69 +80,66 @@ namespace OurShop.Tests.Repositories
         [Fact]
         public async Task GetByStoreNameAsync_ShouldReturnProducts_WhenStoreNameMatches()
         {
+            SeedDatabase();
             // Arrange
-            var storeName = "Test Store";
-            var products = new List<Product>
-            {
-                new Product { ProductId = Guid.NewGuid(), ProductName = "Test Product 1", Price = 100, Store = new Store { StoreName = storeName }, UserId = "user1" },
-                new Product { ProductId = Guid.NewGuid(), ProductName = "Test Product 2", Price = 200, Store = new Store { StoreName = "Another Store" }, UserId = "user2" }
-            }.AsQueryable();
-
-            SetupMockDbSet(products);
+            var storeName = "Test Store 1";
+            var storeId = _context.Stores.First(s => s.StoreName == storeName).StoreId;
+            _context.Products.Add(new Product { ProductId = Guid.NewGuid(), ProductName = "Test Product 3", Description = "Description 3", Price = 300, StockQuantity = 30, StoreId = storeId, UserId = "user3", ImageUrl = "image3.png" });
+            _context.SaveChanges();
 
             // Act
             var result = await _productRepository.GetByStoreNameAsync(storeName);
 
             // Assert
-            Assert.Single(result);
-            Assert.Contains(result, p => p.Store.StoreName == storeName);
+            Assert.Equal(2, result.Count());
         }
 
         [Fact]
         public async Task AddAsync_ShouldAddProduct()
         {
+            SeedDatabase();
             // Arrange
-            var newProduct = new Product { ProductId = Guid.NewGuid(), ProductName = "Test Product 3", Price = 300, StoreId = Guid.NewGuid(), UserId = "user3" };
+            var newProduct = new Product { ProductId = Guid.NewGuid(), ProductName = "Test Product 3", Description = "Description 3", Price = 300, StockQuantity = 30, StoreId = _context.Stores.First().StoreId, UserId = "user3", ImageUrl = "image3.png" };
 
             // Act
             await _productRepository.AddAsync(newProduct);
 
             // Assert
-            _mockSet.Verify(m => m.AddAsync(newProduct, default), Times.Once());
-            _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+            Assert.Equal(3, _context.Products.Count());
         }
 
         [Fact]
         public async Task UpdateAsync_ShouldUpdateProduct()
         {
+            SeedDatabase();
             // Arrange
-            var product = new Product { ProductId = Guid.NewGuid(), ProductName = "Test Product 1", Price = 100, StoreId = Guid.NewGuid(), UserId = "user1" };
+            var product = _context.Products.First();
+            product.ProductName = "Updated Product";
 
             // Act
-            product.ProductName = "Updated Product";
             await _productRepository.UpdateAsync(product);
 
             // Assert
-            _mockSet.Verify(m => m.Update(product), Times.Once());
-            _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+            var updatedProduct = _context.Products.First();
+            Assert.Equal("Updated Product", updatedProduct.ProductName);
         }
 
         [Fact]
         public async Task DeleteAsync_ShouldRemoveProduct()
         {
+            SeedDatabase();
             // Arrange
-            var productId = Guid.NewGuid();
-            var product = new Product { ProductId = productId, ProductName = "Test Product 1", Price = 100, StoreId = Guid.NewGuid(), UserId = "user1" };
-            var products = new List<Product> { product }.AsQueryable();
-
-            SetupMockDbSet(products);
+            var productId = _context.Products.First().ProductId;
+            var product = await _productRepository.GetByIdAsync(productId);
 
             // Act
-            await _productRepository.DeleteAsync(product);
+            if (product != null)
+            {
+                await _productRepository.DeleteAsync(product);
+            }
 
             // Assert
-            _mockSet.Verify(m => m.Remove(product), Times.Once());
-            _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Once());
+            Assert.Equal(2, _context.Products.Count());
         }
     }
 }
