@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { apiRegister } from '../api';
 
@@ -8,6 +6,7 @@ function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullname, setFullname] = useState("");
   const [role, setRole] = useState("buyer");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -15,10 +14,11 @@ function Register() {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     try {
-      await apiRegister(username, email, password, role);
+      const data = await apiRegister(username, email, password, fullname, role);
       setUsername("");
       setEmail("");
       setPassword("");
+      setFullname("");
       setRole("buyer");
       setError(null);
       navigate('/login');
@@ -28,45 +28,70 @@ function Register() {
   };
 
   return (
-    <div>
+    <div className="container mt-5">
+      <h1>Register</h1>
       <form onSubmit={handleOnSubmit}>
-        <TextField
-          variant="outlined"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          label="Username"
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          label="Email"
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          variant="outlined"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          label="Password"
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          variant="outlined"
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          label="Role"
-          fullWidth
-          margin="normal"
-        />
-        {error && <div style={{ color: 'red' }}>{error}</div>}
-        <Button type="submit" variant="contained" color="primary">
+        <div className="form-group mb-3">
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            className="form-control"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group mb-3">
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group mb-3">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            className="form-control"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group mb-3">
+          <label htmlFor="fullname">Full Name</label>
+          <input
+            type="text"
+            className="form-control"
+            id="fullname"
+            value={fullname}
+            onChange={(e) => setFullname(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group mb-3">
+          <label htmlFor="role">Role</label>
+          <select
+            className="form-control"
+            id="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            required
+          >
+            <option value="buyer">Buyer</option>
+            <option value="seller">Seller</option>
+          </select>
+        </div>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <button type="submit" className="btn btn-primary">
           Register
-        </Button>
+        </button>
       </form>
     </div>
   );

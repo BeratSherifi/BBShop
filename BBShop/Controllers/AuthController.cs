@@ -34,7 +34,9 @@ namespace BBShop.Controllers
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 var token = await _tokenService.CreateToken(user);
-                return Ok(new { token });
+                var roles = await _userManager.GetRolesAsync(user);
+                var role = roles.FirstOrDefault(); // Assuming a user has a single role
+                return Ok(new { token, user.Email, user.Id, user.UserName, role });
             }
             return Unauthorized();
         }

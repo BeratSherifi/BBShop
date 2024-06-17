@@ -41,11 +41,20 @@ namespace BBShop.Controllers
 
         [HttpPost]
         [AllowAnonymous] // everyone can create account
-        public async Task<IActionResult> Add(UserCreateDto userDto)
+        public async Task<IActionResult> Add([FromBody] UserCreateDto userDto)
         {
-            var userId = await _userService.AddAsync(userDto);
-            return CreatedAtAction(nameof(GetById), new { id = userId }, userId);
+            try
+            {
+                var userId = await _userService.AddAsync(userDto);
+                return CreatedAtAction(nameof(GetById), new { id = userId }, userId);
+            }
+            catch (Exception ex)
+            {
+                // Log the detailed error message
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
+
 
         [HttpPut("{id}")]
         [Authorize(Policy = "AdminOrSellerOrBuyerPolicy")] // only admin, seller, and buyer can access

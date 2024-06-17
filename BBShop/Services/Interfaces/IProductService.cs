@@ -10,6 +10,7 @@ namespace BBShop.Services.Interfaces
         Task<ProductDto> GetByIdAsync(Guid id);
         Task<IEnumerable<ProductDto>> GetAllAsync();
         Task<IEnumerable<ProductDto>> GetByStoreNameAsync(string storeName);
+        Task<IEnumerable<ProductDto>> GetByStoreIdAsync(Guid storeId);
         Task AddAsync(ProductCreateDto productDto, string userId);
         Task UpdateAsync(Guid productId, ProductUpdateDto productDto, string userId);
         Task DeleteAsync(Guid productId, string userId);
