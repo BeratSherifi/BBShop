@@ -34,6 +34,14 @@ namespace BBShop.Repositories.Implementations
                 .Where(p => p.Store.StoreName == storeName)
                 .ToListAsync();
         }
+        
+     public async Task<IEnumerable<Product>> GetByStoreIdAsync(Guid storeId)
+        {
+            return await _context.Products
+                .Include(p => p.Store)
+                .Where(p => p.StoreId == storeId)
+                .ToListAsync();
+        }
 
         public async Task AddAsync(Product product)
         {

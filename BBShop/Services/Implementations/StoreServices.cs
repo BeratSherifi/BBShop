@@ -67,9 +67,9 @@ namespace BBShop.Services.Implementations
             await _storeRepository.DeleteAsync(store);
         }
 
-        public async Task<IEnumerable<StoreDto>> SearchByNameAsync(string name)
+        public async Task<IEnumerable<StoreDto>> SearchStoresAsync(string query)
         {
-            var stores = await _storeRepository.SearchByNameAsync(name);
+            var stores = await _storeRepository.SearchByNameAsync(query);
             return _mapper.Map<IEnumerable<StoreDto>>(stores);
         }
 
@@ -87,7 +87,15 @@ namespace BBShop.Services.Implementations
                 file.CopyTo(fileStream);
             }
 
-            return filePath;
+            return $"/uploads/stores/{Path.GetFileName(filePath)}";
+        }
+
+
+
+        public async Task<StoreDto> GetByUserId(string userId)
+        {
+            var store = await _storeRepository.GetByUserIdAsync(userId);
+            return _mapper.Map<StoreDto>(store);
         }
     }
 }

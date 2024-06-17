@@ -37,10 +37,10 @@ namespace BBShop.Controllers
             return Ok(orders);
         }
 
-        [HttpGet("store/{storeName}")]
-        public async Task<IActionResult> GetByStoreName(string storeName)
+        [HttpGet("by-store/{storeId}")]
+        public async Task<IActionResult> GetByStoreId(Guid storeId) 
         {
-            var orders = await _orderService.GetByStoreNameAsync(storeName);
+            var orders = await _orderService.GetByStoreIdAsync(storeId);
             return Ok(orders);
         }
 

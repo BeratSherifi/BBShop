@@ -32,13 +32,15 @@ namespace BBShop.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "AdminOrSellerPolicy")] // Only Admin and Seller can access
+        [Authorize(Policy = "AdminOrSellerPolicy")]
         public async Task<IActionResult> Create([FromForm] StoreCreateDto storeDto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var createdStore = await _storeService.AddAsync(storeDto, userId);
             return CreatedAtAction(nameof(GetById), new { id = createdStore.StoreId }, createdStore);
         }
+
+
 
         [HttpPut("{id}")]
         [Authorize(Policy = "AdminOrSellerPolicy")] // Only Admin and Seller can access
@@ -75,10 +77,21 @@ namespace BBShop.Controllers
         }
 
         [HttpGet("search/{name}")]
-        [AllowAnonymous]
         public async Task<IActionResult> Search(string name)
         {
-            var stores = await _storeService.SearchByNameAsync(name);
+            var stores = await _storeService.SearchStoresAsync(name);
+            if (stores == null || !stores.Any())
+            {
+                return NotFound();
+            }
+            return Ok(stores);
+        }
+        
+        [HttpGet("by-user-id/{userId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStoreByUserId(string userId)
+        {
+            var stores = await _storeService.GetByUserId(userId);
             return Ok(stores);
         }
     }

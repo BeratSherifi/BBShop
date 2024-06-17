@@ -44,6 +44,12 @@ namespace BBShop.Services.Implementations
             var products = await _productRepository.GetByStoreNameAsync(storeName);
             return _mapper.Map<IEnumerable<ProductDto>>(products);
         }
+        
+        public async Task<IEnumerable<ProductDto>> GetByStoreIdAsync(Guid storeId)
+        {
+            var products = await _productRepository.GetByStoreIdAsync(storeId);
+            return _mapper.Map<IEnumerable<ProductDto>>(products);
+        }
 
         public async Task AddAsync(ProductCreateDto productDto, string userId)
         {
@@ -98,7 +104,7 @@ namespace BBShop.Services.Implementations
                 file.CopyTo(fileStream);
             }
 
-            return filePath;
+            return $"/uploads/products/{Path.GetFileName(filePath)}";
         }
     }
 }

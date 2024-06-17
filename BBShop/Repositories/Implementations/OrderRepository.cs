@@ -34,12 +34,12 @@ namespace BBShop.Repositories.Implementations
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Order>> GetByStoreNameAsync(string storeName)
+        public async Task<IEnumerable<Order>> GetByStoreIdAsync(Guid storeId) // Implement method
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
-                .Where(o => o.Store.StoreName == storeName)
+                .Where(o => o.StoreId == storeId)
                 .ToListAsync();
         }
 
