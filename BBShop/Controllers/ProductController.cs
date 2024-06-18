@@ -37,10 +37,20 @@ namespace BBShop.Controllers
             return Ok(products);
         }
 
+        
         [HttpGet("store/{storeName}")]
         public async Task<IActionResult> GetByStoreName(string storeName)
         {
             var products = await _productService.GetByStoreNameAsync(storeName);
+            return Ok(products);
+        }
+        
+        
+        
+        [HttpGet("by-store-id/{storeId}")]
+        public async Task<IActionResult> GetByStoreId(Guid storeId)
+        {
+            var products = await _productService.GetByStoreIdAsync(storeId);
             return Ok(products);
         }
 

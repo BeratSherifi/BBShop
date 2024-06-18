@@ -6,6 +6,7 @@ using BBShop.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BBShop.Data;
 
 namespace BBShop.Services.Implementations
 {
@@ -13,19 +14,32 @@ namespace BBShop.Services.Implementations
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IStoreRepository _storeRepository;
+        private readonly AppDbContext _context;
         private readonly IMapper _mapper;
 
-        public OrderService(IOrderRepository orderRepository, IStoreRepository storeRepository, IMapper mapper)
+        public OrderService(IOrderRepository orderRepository, IStoreRepository storeRepository, AppDbContext context, IMapper mapper)
         {
             _orderRepository = orderRepository;
             _storeRepository = storeRepository;
+            _context = context;
             _mapper = mapper;
         }
 
         public async Task<OrderDto> GetByIdAsync(Guid id)
         {
             var order = await _orderRepository.GetByIdAsync(id);
-            return _mapper.Map<OrderDto>(order);
+            var orderDto = _mapper.Map<OrderDto>(order);
+            
+            foreach (var item in orderDto.OrderItems)
+            {
+                var product = await _context.Products.FindAsync(item.ProductId);
+                if (product != null)
+                {
+                    item.ProductName = product.ProductName;
+                }
+            }
+
+            return orderDto;
         }
 
         public async Task<IEnumerable<OrderDto>> GetAllAsync()
@@ -34,11 +48,46 @@ namespace BBShop.Services.Implementations
             return _mapper.Map<IEnumerable<OrderDto>>(orders);
         }
 
-        public async Task<IEnumerable<OrderDto>> GetByStoreNameAsync(string storeName)
+        public async Task<IEnumerable<OrderDto>> GetByStoreIdAsync(Guid storeId)
         {
-            var orders = await _orderRepository.GetByStoreNameAsync(storeName);
-            return _mapper.Map<IEnumerable<OrderDto>>(orders);
+            var orders = await _orderRepository.GetByStoreIdAsync(storeId);
+            var orderDtos = _mapper.Map<IEnumerable<OrderDto>>(orders);
+
+            foreach (var orderDto in orderDtos)
+            {
+                foreach (var item in orderDto.OrderItems)
+                {
+                    var product = await _context.Products.FindAsync(item.ProductId);
+                    if (product != null)
+                    {
+                        item.ProductName = product.ProductName;
+                    }
+                }
+            }
+
+            return orderDtos;
         }
+
+        public async Task<IEnumerable<OrderDto>> GetByUserIdAsync(string userId)
+        {
+            var orders = await _orderRepository.GetByUserIdAsync(userId);
+            var orderDtos = _mapper.Map<IEnumerable<OrderDto>>(orders);
+
+            foreach (var orderDto in orderDtos)
+            {
+                foreach (var item in orderDto.OrderItems)
+                {
+                    var product = await _context.Products.FindAsync(item.ProductId);
+                    if (product != null)
+                    {
+                        item.ProductName = product.ProductName;
+                    }
+                }
+            }
+
+            return orderDtos;
+        }
+        
 
         public async Task<OrderDto> AddAsync(OrderCreateDto orderDto, string userId)
         {

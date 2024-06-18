@@ -45,11 +45,11 @@ namespace BBShop.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Store>> SearchByNameAsync(string name)
+        public async Task<IEnumerable<Store>> SearchByNameAsync(string query) // Implementing search by store name
         {
             return await _context.Stores
                 .Include(s => s.User)
-                .Where(s => s.StoreName.Contains(name))
+                .Where(s => s.StoreName.Contains(query))
                 .ToListAsync();
         }
 
@@ -59,5 +59,9 @@ namespace BBShop.Repositories.Implementations
                 .Include(s => s.User)
                 .FirstOrDefaultAsync(s => s.UserId == userId);
         }
+        
+
+
+        
     }
 }

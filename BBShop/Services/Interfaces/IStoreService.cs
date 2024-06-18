@@ -2,6 +2,7 @@ using BBShop.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BBShop.Models;
 
 namespace BBShop.Services.Interfaces
 {
@@ -11,6 +12,7 @@ namespace BBShop.Services.Interfaces
         Task<StoreDto> AddAsync(StoreCreateDto storeDto, string userId);
         Task UpdateAsync(Guid id, StoreUpdateDto storeDto);
         Task DeleteAsync(Guid id);
-        Task<IEnumerable<StoreDto>> SearchByNameAsync(string name);
+        Task<IEnumerable<StoreDto>> SearchStoresAsync(string query); 
+        Task<StoreDto> GetByUserId(string userId);
     }
 }

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "hmNqOBdAmDDGkNyZOOQROfJ49+GkqAD0Yhk8d25ZN4U=",
+  "Hash": "6/xTVoKIa3lCCMolVhSTlLtKBeiUu79onFuVWUQRWrY=",
   "Source": "BBShop",
   "BasePath": "_content/BBShop",
   "Mode": "Default",
@@ -15,40 +15,5 @@
       "Pattern": "**"
     }
   ],
-  "Assets": [
-    {
-      "Identity": "/home/linux/RiderProjects/BBShop/BBShop/wwwroot/uploads/stores/2ec6e633-eb0f-45b8-9034-9e921b98a6fd.png",
-      "SourceId": "BBShop",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/linux/RiderProjects/BBShop/BBShop/wwwroot/",
-      "BasePath": "_content/BBShop",
-      "RelativePath": "uploads/stores/2ec6e633-eb0f-45b8-9034-9e921b98a6fd.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/uploads/stores/2ec6e633-eb0f-45b8-9034-9e921b98a6fd.png"
-    },
-    {
-      "Identity": "/home/linux/RiderProjects/BBShop/BBShop/wwwroot/uploads/stores/a873aa04-cc86-4716-af25-a295ecf1e8b8.png",
-      "SourceId": "BBShop",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/linux/RiderProjects/BBShop/BBShop/wwwroot/",
-      "BasePath": "_content/BBShop",
-      "RelativePath": "uploads/stores/a873aa04-cc86-4716-af25-a295ecf1e8b8.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/uploads/stores/a873aa04-cc86-4716-af25-a295ecf1e8b8.png"
-    }
-  ]
+  "Assets": []
 }

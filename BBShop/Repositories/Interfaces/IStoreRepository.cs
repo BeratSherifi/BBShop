@@ -11,7 +11,7 @@ namespace BBShop.Repositories.Interfaces
         Task AddAsync(Store store);
         Task UpdateAsync(Store store);
         Task DeleteAsync(Store store);
-        Task<IEnumerable<Store>> SearchByNameAsync(string name);
+        Task<IEnumerable<Store>> SearchByNameAsync(string query); // Add this method for searching stores by name
         Task<Store> GetByUserIdAsync(string userId);
     }
 }
