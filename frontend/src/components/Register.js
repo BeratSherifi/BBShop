@@ -9,21 +9,26 @@ function Register() {
   const [fullname, setFullname] = useState("");
   const [role, setRole] = useState("buyer");
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const navigate = useNavigate();
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     try {
       const data = await apiRegister(username, email, password, fullname, role);
+      // Clear the form fields
       setUsername("");
       setEmail("");
       setPassword("");
       setFullname("");
       setRole("buyer");
       setError(null);
-      navigate('/login');
+      setSuccess(data.message);
+      // Navigate to the login page after a short delay
+      setTimeout(() => navigate('/login'), 2000);
     } catch (error) {
-      setError("Registration failed. Please try again.");
+      setError(error.message);
+      setSuccess(null);
     }
   };
 
@@ -89,6 +94,7 @@ function Register() {
           </select>
         </div>
         {error && <div className="alert alert-danger">{error}</div>}
+        {success && <div className="alert alert-success">{success}</div>}
         <button type="submit" className="btn btn-primary">
           Register
         </button>

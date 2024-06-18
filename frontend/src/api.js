@@ -20,12 +20,26 @@ export async function apiRegister(username, email, password, fullname, role) {
     },
     body: JSON.stringify({ username, email, password, fullname, role }),
   });
-  if (!response.ok) {
-    throw new Error('Registration failed');
+
+  if (response.status === 201 || response.status === 204) {
+    // Return a success message or an empty object for successful registration
+    return { message: 'Registration successful' };
+  } else {
+    // Handle error response
+    const errorText = await response.text();
+    let errorMessage = 'Registration failed';
+    try {
+      const errorJson = JSON.parse(errorText);
+      if (errorJson && errorJson.message) {
+        errorMessage = errorJson.message;
+      }
+    } catch (e) {
+      errorMessage = errorText || errorMessage;
+    }
+    throw new Error(errorMessage);
   }
-  const responseData = await response.text();
-  return responseData ? JSON.parse(responseData) : {};
 }
+
 
 export async function apiGetUserProfile(userId, token) {
   const response = await fetch(`http://localhost:5197/api/user/${userId}`, {
@@ -71,13 +85,13 @@ export async function apiCreateStore(storeName, token) {
   return response.json();
 }
 
-export async function apiUpdateProduct(productId, productData, token) {
+export async function apiUpdateProduct(productId, formData, token) {
   const response = await fetch(`http://localhost:5197/api/product/${productId}`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${token}`,
     },
-    body: productData,
+    body: formData,
   });
 
   if (!response.ok) {
@@ -85,13 +99,9 @@ export async function apiUpdateProduct(productId, productData, token) {
     throw new Error(`Failed to update product: ${errorText}`);
   }
 
-  // Expect no content status for successful update
-  if (response.status === 204) {
-    return true;
-  }
-
-  return response.json();
+  return response;
 }
+
 
 
 
@@ -161,6 +171,23 @@ export async function apiGetOrdersByStoreId(storeId, token) {
   }
   return response.json();
 }
+
+export async function apiGetOrdersByUserId(userId, token) {
+  const response = await fetch(`http://localhost:5197/api/Order/by-user/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to fetch orders: ${errorText}`);
+  }
+
+  return response.json();
+}
+
 
 export async function apiUpdateOrderStatus(orderId, status, token) {
   const response = await fetch(`http://localhost:5197/api/order/${orderId}/status`, {
