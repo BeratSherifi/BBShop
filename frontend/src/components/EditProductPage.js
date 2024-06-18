@@ -43,10 +43,15 @@ function EditProductPage() {
     }
 
     try {
-      await apiUpdateProduct(productId, formData, token);
-      setSuccess(true);
-      setError(null);
-      navigate('/store'); // Redirect to store page after successful update
+      const response = await apiUpdateProduct(productId, formData, token);
+      if (response.status === 204) {
+        setSuccess(true);
+        setError(null);
+        navigate('/store-seller'); // Redirect to store page after successful update
+      } else {
+        setSuccess(false);
+        setError("Failed to update product");
+      }
     } catch (error) {
       setSuccess(false);
       setError("Failed to update product");

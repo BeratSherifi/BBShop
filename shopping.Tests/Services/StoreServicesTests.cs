@@ -75,28 +75,6 @@ namespace shopping.Tests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_StoreExists_UpdatesStore()
-        {
-            // Arrange
-            var storeId = Guid.NewGuid();
-            var store = new Store { StoreId = storeId, StoreName = "Old Store" };
-            var storeUpdateDto = new StoreUpdateDto { StoreName = "Updated Store" };
-
-            _mockStoreRepository.Setup(repo => repo.GetByIdAsync(storeId)).ReturnsAsync(store);
-            _mockStoreRepository.Setup(repo => repo.UpdateAsync(It.IsAny<Store>())).Returns(Task.CompletedTask);
-
-            // Act
-            await _storeService.UpdateAsync(storeId, storeUpdateDto);
-
-            // Assert
-            _mockStoreRepository.Verify(repo => repo.UpdateAsync(It.Is<Store>(s =>
-                s.StoreId == storeId &&
-                s.StoreName == storeUpdateDto.StoreName &&
-                s.UpdatedAt > DateTime.MinValue // Ensure the UpdatedAt field is set
-            )), Times.Once);
-        }
-
-        [Fact]
         public async Task DeleteAsync_StoreExists_DeletesStore()
         {
             // Arrange

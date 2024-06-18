@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
+import { apiDeleteProduct } from '../api';
 
 function ProductListSeller({ storeId }) {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const token = localStorage.getItem('authToken');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -33,6 +36,22 @@ function ProductListSeller({ storeId }) {
     }
   }, [storeId, token]);
 
+  const handleEditProduct = (productId) => {
+    navigate(`/edit-product/${productId}`);
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    const confirmed = window.confirm('Are you sure you want to delete this product?');
+    if (confirmed) {
+      try {
+        await apiDeleteProduct(productId, token);
+        setProducts(products.filter(product => product.productId !== productId));
+      } catch (error) {
+        setError('Failed to delete product');
+      }
+    }
+  };
+
   return (
     <div className="container mt-5">
       <h2>Products</h2>
@@ -48,8 +67,8 @@ function ProductListSeller({ storeId }) {
                   <p className="card-text">{product.description}</p>
                   <p className="card-text"><strong>Price:</strong> ${product.price}</p>
                   <p className="card-text"><strong>Stock:</strong> {product.stockQuantity}</p>
-                  <button className="btn btn-warning mr-2">Edit</button>
-                  <button className="btn btn-danger">Delete</button>
+                  <button className="btn btn-warning mr-2" onClick={() => handleEditProduct(product.productId)}>Edit</button>
+                  <button className="btn btn-danger" onClick={() => handleDeleteProduct(product.productId)}>Delete</button>
                 </div>
               </div>
             </div>

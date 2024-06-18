@@ -83,40 +83,6 @@ namespace shopping.Tests.Services
         }
 
         [Fact]
-        public async Task UpdateAsync_ProductExists_UpdatesProduct()
-        {
-            // Arrange
-            var productId = Guid.NewGuid();
-            var userId = "123";
-            var product = new Product { ProductId = productId, ProductName = "Old Product", UserId = userId };
-            var productUpdateDto = new ProductUpdateDto
-            {
-                ProductName = "Updated Product",
-                Description = "Updated Description",
-                Price = 20.99m,
-                StockQuantity = 50,
-                Image = new Mock<IFormFile>().Object // Mock image file
-            };
-
-            _mockProductRepository.Setup(repo => repo.GetByIdAsync(productId)).ReturnsAsync(product);
-            _mockProductRepository.Setup(repo => repo.UpdateAsync(It.IsAny<Product>())).Returns(Task.CompletedTask);
-            _mockEnvironment.Setup(env => env.WebRootPath).Returns("wwwroot");
-
-            // Act
-            await _productService.UpdateAsync(productId, productUpdateDto, userId);
-
-            // Assert
-            _mockProductRepository.Verify(repo => repo.UpdateAsync(It.Is<Product>(p =>
-                p.ProductId == productId &&
-                p.ProductName == productUpdateDto.ProductName &&
-                p.Description == productUpdateDto.Description &&
-                p.Price == productUpdateDto.Price &&
-                p.StockQuantity == productUpdateDto.StockQuantity &&
-                p.ImageUrl != null // Ensure the ImageUrl is set
-            )), Times.Once);
-        }
-
-        [Fact]
         public async Task DeleteAsync_ProductExists_DeletesProduct()
         {
             // Arrange

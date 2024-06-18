@@ -153,5 +153,27 @@ namespace shopping.Tests.Services
             Assert.NotNull(result);
             Assert.Equal(orderDtos.Count(), result.Count());
         }
+
+        [Fact]
+        public async Task GetByUserIdAsync_OrdersExist_ReturnsOrderDtos()
+        {
+            // Arrange
+            var userId = "123";
+            var orders = new List<Order>
+            {
+                new Order { OrderId = Guid.NewGuid(), UserId = userId, Status = "Pending", OrderItems = new List<OrderItem>() },
+                new Order { OrderId = Guid.NewGuid(), UserId = userId, Status = "Completed", OrderItems = new List<OrderItem>() }
+            };
+            var orderDtos = _mapper.Map<IEnumerable<OrderDto>>(orders);
+
+            _mockOrderRepository.Setup(repo => repo.GetByUserIdAsync(userId)).ReturnsAsync(orders);
+
+            // Act
+            var result = await _orderService.GetByUserIdAsync(userId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(orderDtos.Count(), result.Count());
+        }
     }
 }
