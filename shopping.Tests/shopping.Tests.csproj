@@ -28,4 +28,9 @@
     <ProjectReference Include="..\BBShop\BBShop.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>
