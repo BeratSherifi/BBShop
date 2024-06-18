@@ -68,6 +68,27 @@ namespace BBShop.Services.Implementations
             return orderDtos;
         }
 
+        public async Task<IEnumerable<OrderDto>> GetByUserIdAsync(string userId)
+        {
+            var orders = await _orderRepository.GetByUserIdAsync(userId);
+            var orderDtos = _mapper.Map<IEnumerable<OrderDto>>(orders);
+
+            foreach (var orderDto in orderDtos)
+            {
+                foreach (var item in orderDto.OrderItems)
+                {
+                    var product = await _context.Products.FindAsync(item.ProductId);
+                    if (product != null)
+                    {
+                        item.ProductName = product.ProductName;
+                    }
+                }
+            }
+
+            return orderDtos;
+        }
+        
+
         public async Task<OrderDto> AddAsync(OrderCreateDto orderDto, string userId)
         {
             var order = _mapper.Map<Order>(orderDto);
