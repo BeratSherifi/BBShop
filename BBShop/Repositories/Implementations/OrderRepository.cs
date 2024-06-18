@@ -34,7 +34,7 @@ namespace BBShop.Repositories.Implementations
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Order>> GetByStoreIdAsync(Guid storeId) // Implement method
+        public async Task<IEnumerable<Order>> GetByStoreIdAsync(Guid storeId)
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)
@@ -43,6 +43,14 @@ namespace BBShop.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Order>> GetByUserIdAsync(string userId)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .Where(o => o.UserId == userId)
+                .ToListAsync();
+        }
         public async Task AddAsync(Order order)
         {
             await _context.Orders.AddAsync(order);
